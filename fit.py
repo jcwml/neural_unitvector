@@ -1,4 +1,5 @@
 # github.com/jcwml
+# 3D training points are 0 - 10,000 in range and the test set uses point in a 0 - 10,000,000 range.
 import sys
 import os
 import math
@@ -50,14 +51,14 @@ def dist(x1, y1, z1, x2, y2, z2):
 seed(74035)
 model_name = 'keras_model'
 optimiser = 'adam'
+activator = 'tanh'
 inputsize = 3
 outputsize =  3
 epoches = 6
-activator = 'tanh'
-layers = 3
-layer_units = 32
+layers = 0
+layer_units = 128
 batches = 128
-samples = 333333
+samples = 3333333
 
 # load options
 argc = len(sys.argv)
@@ -179,7 +180,7 @@ st = time_ns()
 # save prediction model
 predict_x = np.empty([8192, 3], float)
 for i in range(8192):
-    predict_x[i] = [random()*100000, random()*100000, random()*100000]
+    predict_x[i] = [random()*10000000, random()*10000000, random()*10000000]
 
 ad = 0.0
 f = open(model_name + "_pd.csv", "w")
