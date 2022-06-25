@@ -56,7 +56,7 @@ epoches = 6
 activator = 'tanh'
 layers = 3
 layer_units = 32
-batches = 256
+batches = 128
 samples = 333333
 
 # load options
