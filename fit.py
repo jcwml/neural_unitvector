@@ -43,6 +43,9 @@ def norm(v):
     l = math.sqrt(v[0]*v[0]+v[1]*v[1]+v[2]*v[2])
     return [v[0]/l, v[1]/l, v[2]/l]
 
+def dist(x1, y1, z1, x2, y2, z2):
+    return math.sqrt((x2 - x1)**2 + (y2 - y1)**2 + (z2 - z1)**2)
+
 # hyperparameters
 seed(74035)
 model_name = 'keras_model'
@@ -176,8 +179,9 @@ st = time_ns()
 # save prediction model
 predict_x = np.empty([8192, 3], float)
 for i in range(8192):
-    predict_x[i] = [random()*10000, random()*10000, random()*10000]
+    predict_x[i] = [random()*100000, random()*100000, random()*100000]
 
+ad = 0.0
 f = open(model_name + "_pd.csv", "w")
 if f:
     
@@ -186,12 +190,17 @@ if f:
     p = model.predict(predict_x)
     for i in range(8192):
         an = norm([predict_x[i][0], predict_x[i][1], predict_x[i][2]])
-        f.write(str(abs(p[i][0]-an[0]) + abs(p[i][1]-an[1]) + abs(p[i][2]-an[2])) + " | " + str(p[i][0]) + "," + str(p[i][1]) + "," + str(p[i][2]) + " | " + str(an[0]) + "," + str(an[1]) + "," + str(an[2]) + "\n")
+        # dev = abs(p[i][0]-an[0]) + abs(p[i][1]-an[1]) + abs(p[i][2]-an[2])
+        dev = dist(p[i][0], p[i][1], p[i][2], an[0], an[1], an[2])
+        ad += dev
+        f.write(str(dev) + " | " + str(p[i][0]) + "," + str(p[i][1]) + "," + str(p[i][2]) + " | " + str(an[0]) + "," + str(an[1]) + "," + str(an[2]) + "\n")
 
     f.close()
 
 # save keras model
 # model.save(model_name)
+
+print("\nTest Set Avg Deviance:", ad/8192, "\n")
 
 timetaken = (time_ns()-st)/1e+9
 print("Time Taken:", "{:.2f}".format(timetaken), "seconds\n")
