@@ -49,6 +49,7 @@ def dist(x1, y1, z1, x2, y2, z2):
 
 # hyperparameters
 seed(74035)
+project = "neural_unitvector"
 model_name = 'keras_model'
 optimiser = 'adam'
 activator = 'tanh'
@@ -89,7 +90,7 @@ if argc >= 9:
 
 # make sure save dir exists
 if not isdir('models'): mkdir('models')
-model_name = 'models/' + activator + '_' + optimiser + '_' + sys.argv[1] + '_' + sys.argv[2] + '_' + sys.argv[3] + '_' + sys.argv[7] + '_' + sys.argv[8]
+model_name = 'models/' + activator + '_' + optimiser + '_' + str(layers) + '_' + str(layer_units) + '_' + str(batches) + '_' + str(samples) + '_' + str(epoches)
 
 ##########################################
 #   CREATE DATASET
@@ -176,6 +177,45 @@ print("\nTime Taken:", "{:.2f}".format(timetaken), "seconds")
 ##########################################
 print("\n--Exporting Model")
 st = time_ns()
+
+# save weights for C array
+print("\nExporting weights...")
+li = 0
+f = open(model_name + "_layers.h", "w")
+f.write("#ifndef " + project + "_layers\n#define " + project + "_layers\n\n")
+if f:
+    for layer in model.layers:
+        total_layer_weights = layer.get_weights()[0].flatten().shape[0]
+        total_layer_units = layer.units
+        layer_weights_per_unit = total_layer_weights / total_layer_units
+        #print(layer.get_weights()[0].flatten().shape)
+        #print(layer.units)
+        print("+ Layer:", li)
+        print("Total layer weights:", total_layer_weights)
+        print("Total layer units:", total_layer_units)
+        print("Weights per unit:", int(layer_weights_per_unit))
+
+        f.write("const float " + project + "_layer" + str(li) + "[] = {")
+        isfirst = 0
+        wc = 0
+        bc = 0
+        if layer.get_weights() != []:
+            for weight in layer.get_weights()[0].flatten():
+                wc += 1
+                if isfirst == 0:
+                    f.write(str(weight))
+                    isfirst = 1
+                else:
+                    f.write("," + str(weight))
+                if wc == layer_weights_per_unit:
+                    f.write(", /* bias */ " + str(layer.get_weights()[1].flatten()[bc]))
+                    #print("bias", str(layer.get_weights()[1].flatten()[bc]))
+                    wc = 0
+                    bc += 1
+        f.write("};\n\n")
+        li += 1
+f.write("#endif\n")
+f.close()
 
 # save prediction model
 predict_x = np.empty([8192, 3], float)
