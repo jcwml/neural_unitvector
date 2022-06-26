@@ -5,23 +5,19 @@ This will generate x number of random points in three dimensional space for the 
 
 ```
 Speed Test
-:: norm_neural_256() :: 5835027 μs, 21548540001 Cycles
-:: norm_neural_16()  :: 5953079 μs, 21984501048 Cycles
-:: norm()            :: 3212882 μs, 11865056104 Cycles
-:: norm_inv()        :: 3304120 μs, 12201993533 Cycles
-:: norm_intrin()     :: 2320295 μs, 8568761550 Cycles
+:: norm_neural_256() :: 201875 μs, 745523323 Cycles
+:: norm_neural_16()  :: 6571 μs, 24263897 Cycles
+:: norm()            :: 307 μs, 1132459 Cycles
+:: norm_inv()        :: 303 μs, 1120952 Cycles
+:: norm_intrin()     :: 218 μs, 805564 Cycles
 
 Accuracy Test
-InvSqrt:   0.033554
-Intrinsic: 0.033554
-Neural16:  1125899.875000
-Neural256: 562949.937500
+InvSqrt:   0.000965
+Intrinsic: 0.000063
+Neural16:  0.905226
+Neural256: 2.096257
 ```
 
 As you can see, the neural network is the least performing. This test used a smaller neural network with an accuracy of 0.90 for efficient computation over accuracy however even with auto vectorisation for fma enabled the neural version still came out significantly slower.
 
-There seems to be no significant performance loss over using the larger neural network over the smaller one.
-
 It is unlikely that a neural unit vector function will ever compete with the traditional normalisation functions in speed or accuracy combined or individually.
-
-Blowing my mind a little here is that the Neural256 is exactly 2x more accurate than the Neural16 ?! wow.
