@@ -33,3 +33,17 @@ There is an overfitting problem when training in Python, as such I now use datas
 The idea that a neural network can learn complex functions is honestly mostly a myth, or very rare/specific cases and even so they're not efficient at doing so, they really are just machines that seperate points of data into classes with shoddy interpolation between the points because activation functions are not designed to seperate data in a way that is necessarily interpolatable, it's just a side effect of the circumstances.
 
 Also neural networks scale REALLY BADLY when it comes to getting higher accuracy results, you can see the amount of added complexity to these neural networks for VERY MINIMAL gains is redicilous. Excuse my use of upper case.
+
+Context:
+```
+Speed Test
+:: norm_neural_6x32() :: 479753 μs, 1771679954 Cycles
+:: norm_neural_256()  :: 194167 μs, 717036394 Cycles
+:: norm_neural_16()   :: 8562 μs, 31616944 Cycles
+
+Neural16:   1.021691
+Neural256:  0.945880
+Neural6x32: 0.926647
+
+Neural256 is 0.075811 more accurate than Neural16 for 185,605 μs more compute time that's 22.6x more compute time for ~1/13th more accuracy.
+```
