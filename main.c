@@ -125,7 +125,8 @@ float randf()
     // https://www.musicdsp.org/en/latest/Other/273-fast-float-random-numbers.html
     // moc.liamg@seir.kinimod
     srandfq *= 16807;
-    return (float)(srandfq & 0x7FFFFFFF) * 4.6566129e-010f;
+    return (float)srandfq * 4.6566129e-010f; // -1 to 1
+    // return (float)(srandfq & 0x7FFFFFFF) * 4.6566129e-010f; // 0-1
 }
 
 int main()
@@ -238,8 +239,8 @@ int main()
         norm_neural(x, y, z);
         norm_neural_256(x, y, z);
 
-        // printf(":1: %f %f %f / %f %f %f\n", nx, ny, nz, nx3, ny3, nz3);
-        // printf(":2: %f %f %f / %f %f %f\n", nx, ny, nz, nx4, ny4, nz4);
+        //printf(":1: %f %f %f / %f %f %f\n", nx, ny, nz, nx3, ny3, nz3);
+        //printf(":2: %f %f %f / %f %f %f\n", nx, ny, nz, nx4, ny4, nz4);
 
         // we will assume norm() is the most accurate
         accuracy_inv += dist(nx, ny, nz, nx1, ny1, nz1);
