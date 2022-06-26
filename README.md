@@ -5,17 +5,17 @@ This will generate x number of random points in three dimensional space for the 
 
 ```
 Speed Test
-:: norm_neural_256() :: 211152 μs, 779773779 Cycles
-:: norm_neural_16()  :: 8214 μs, 30335301 Cycles
-:: norm()            :: 304 μs, 1122468 Cycles
-:: norm_inv()        :: 298 μs, 1102230 Cycles
-:: norm_intrin()     :: 216 μs, 798423 Cycles
+:: norm_neural_256() :: 222270 μs, 820833382 Cycles
+:: norm_neural_16()  :: 8586 μs, 31707113 Cycles
+:: norm()            :: 311 μs, 1149997 Cycles
+:: norm_inv()        :: 305 μs, 1129314 Cycles
+:: norm_intrin()     :: 221 μs, 817367 Cycles
 
 Accuracy Test
-InvSqrt:   0.000961
+InvSqrt:   0.000965
 Intrinsic: 0.000063
-Neural16:  0.999504
-Neural256: 1.784982
+Neural16:  1.022055
+Neural256: 0.944933
 ```
 
 As you can see, the neural network is the least performing. This test used a smaller neural network with an accuracy of 0.90 for efficient computation over accuracy however even with auto vectorisation for fma enabled the neural version still came out significantly slower.
