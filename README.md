@@ -23,3 +23,5 @@ As you can see, the neural network is the least performing. This test used a sma
 There seems to be no significant performance loss over using the larger neural network over the smaller one.
 
 It is unlikely that a neural unit vector function will ever compete with the traditional normalisation functions in speed or accuracy combined or individually.
+
+Blowing my mind a little here is that the Neural256 is exactly 2x more accurate than the Neural16 ?! wow.
