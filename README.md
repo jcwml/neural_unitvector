@@ -20,6 +20,8 @@ Neural256: 0.944933
 
 As you can see, the neural network is the least performing. This test used a smaller neural network with an accuracy of 0.90 for efficient computation over accuracy however even with auto vectorisation for fma enabled the neural version still came out significantly slower.
 
-It is unlikely that a neural unit vector function will ever compete with the traditional normalisation functions in speed or accuracy combined or individually.
+The 'Accuracy' value is the euclidean distance between the vector produced by the function and the actual vector produced by the accurate function which is a `1.f/sqrtf()` vector normalisation function.
+
+It is unlikely that a neural unit vector function will ever compete with the traditional normalisation functions in speed or accuracy combined or individually. An average accuracy of ~1 is actually really bad because all summed parts of a unit vector are to add up to 1, so if the average accuracy is 1 over the original function, that's enough to have completely ruined our unit vector.
 
 There seems to be an overfitting problem that the python `predict_x` dataset failed to detect? The C implementation of the network seems fine otherwise _(I was right)_.
