@@ -1,3 +1,4 @@
+// github.com/jcwml
 #ifndef tanh_sgd_6_32_384_3333333_6_a95
 #define tanh_sgd_6_32_384_3333333_6_a95
 
