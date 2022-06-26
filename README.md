@@ -39,6 +39,7 @@ Speed Test
 :: norm_neural_256()  :: 194167 μs, 717036394 Cycles
 :: norm_neural_16()   :: 8562 μs, 31616944 Cycles
 
+Accuracy Test
 Neural16:   1.021691
 Neural256:  0.945880
 Neural6x32: 0.926647
