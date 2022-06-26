@@ -10,6 +10,8 @@
 
 #include <x86intrin.h>
 
+#include "nuv.h"
+
 #define NUM_ITERATIONS 100000
 //#define NUM_ITERATIONS 3
 
@@ -119,6 +121,92 @@ void norm_neural_256(float x, float y, float z)
     nz4 = o[2];
 }
 
+// tanh_sgd_6_32_384_3333333_6_a0.95
+float nx5, ny5, nz5;
+void norm_neural_6x32(float x, float y, float z)
+{
+    float h0[32];
+    for(int i = 0; i < 32; i++)
+    {
+        const int j = i*4;
+        h0[i] = tanhf((neural_unitvector_layer0[j] * x) + (neural_unitvector_layer0[j+1] * y) + (neural_unitvector_layer0[j+2] * z) + neural_unitvector_layer0[j+3]);
+    }
+
+    float h1[32];
+    for(int i = 0; i < 32; i++)
+    {
+        h1[i] = 0.f;
+        const int j = i*33;
+        for(int k = 0; k < 32; k++)
+            h1[i] += (neural_unitvector_layer1[j+k] * h0[k]);
+        h1[i] += neural_unitvector_layer1[j+32];
+    }
+
+    float h2[32];
+    for(int i = 0; i < 32; i++)
+    {
+        h2[i] = 0.f;
+        const int j = i*33;
+        for(int k = 0; k < 32; k++)
+            h2[i] += (neural_unitvector_layer2[j+k] * h1[k]);
+        h2[i] += neural_unitvector_layer2[j+32];
+    }
+
+    float h3[32];
+    for(int i = 0; i < 32; i++)
+    {
+        h3[i] = 0.f;
+        const int j = i*33;
+        for(int k = 0; k < 32; k++)
+            h3[i] += (neural_unitvector_layer3[j+k] * h2[k]);
+        h3[i] += neural_unitvector_layer3[j+32];
+    }
+
+    float h4[32];
+    for(int i = 0; i < 32; i++)
+    {
+        h4[i] = 0.f;
+        const int j = i*33;
+        for(int k = 0; k < 32; k++)
+            h4[i] += (neural_unitvector_layer4[j+k] * h3[k]);
+        h4[i] += neural_unitvector_layer4[j+32];
+    }
+
+    float h5[32];
+    for(int i = 0; i < 32; i++)
+    {
+        h5[i] = 0.f;
+        const int j = i*33;
+        for(int k = 0; k < 32; k++)
+            h5[i] += (neural_unitvector_layer5[j+k] * h4[k]);
+        h5[i] += neural_unitvector_layer5[j+32];
+    }
+
+    float h6[32];
+    for(int i = 0; i < 32; i++)
+    {
+        h6[i] = 0.f;
+        const int j = i*33;
+        for(int k = 0; k < 32; k++)
+            h6[i] += (neural_unitvector_layer6[j+k] * h5[k]);
+        h6[i] += neural_unitvector_layer6[j+32];
+    }
+
+    float o[3] = {0};
+    for(int i = 0; i < 3; i++)
+    {
+        o[i] = 0.f;
+        const int j = i*33;
+        for(int k = 0; k < 32; k++)
+            o[i] += (neural_unitvector_layer7[j+k] * h6[k]);
+        o[i] += neural_unitvector_layer7[j+32];
+    }
+
+    nx4 = o[0];
+    ny4 = o[1];
+    nz4 = o[2];
+}
+
 float dist(float x1, float y1, float z1, float x2, float y2, float z2)
 {
     const float xm = (x1 - x2);
@@ -205,7 +293,23 @@ int main()
     stf  = __rdtsc()-st;
     stmf = microtime()-stm;
 
-    printf(":: norm_neural_256() :: %'lu μs, %'lu Cycles\n", stmf, stf);
+    printf(":: norm_neural_256()  :: %'lu μs, %'lu Cycles\n", stmf, stf);
+
+    ///
+
+    stm = microtime();
+    st  = __rdtsc();
+
+    for(uint i = 0; i < NUM_ITERATIONS; i++)
+    {
+        norm_neural_6x32(randf()*10000000, randf()*10000000, randf()*10000000);
+        antioptim += nx5+ny5+nz5;
+    }
+
+    stf  = __rdtsc()-st;
+    stmf = microtime()-stm;
+
+    printf(":: norm_neural_6x32() :: %'lu μs, %'lu Cycles\n", stmf, stf);
 
     ///
 
@@ -221,7 +325,7 @@ int main()
     stf  = __rdtsc()-st;
     stmf = microtime()-stm;
 
-    printf(":: norm_neural_16()  :: %'lu μs, %'lu Cycles\n", stmf, stf);
+    printf(":: norm_neural_16()   :: %'lu μs, %'lu Cycles\n", stmf, stf);
 
     ///
 
@@ -237,7 +341,7 @@ int main()
     stf  = __rdtsc()-st;
     stmf = microtime()-stm;
 
-    printf(":: norm()            :: %'lu μs, %'lu Cycles\n", stmf, stf);
+    printf(":: norm()             :: %'lu μs, %'lu Cycles\n", stmf, stf);
 
     ///
 
@@ -253,7 +357,7 @@ int main()
     stf  = __rdtsc()-st;
     stmf = microtime()-stm;
 
-    printf(":: norm_inv()        :: %'lu μs, %'lu Cycles\n", stmf, stf);
+    printf(":: norm_inv()         :: %'lu μs, %'lu Cycles\n", stmf, stf);
 
     ///
 
@@ -269,7 +373,7 @@ int main()
     stf  = __rdtsc()-st;
     stmf = microtime()-stm;
 
-    printf(":: norm_intrin()     :: %'lu μs, %'lu Cycles\n", stmf, stf);
+    printf(":: norm_intrin()      :: %'lu μs, %'lu Cycles\n", stmf, stf);
 
     ///
 
@@ -281,6 +385,7 @@ int main()
     float accuracy_intrin = 0.f;
     float accuracy_neural = 0.f;
     float accuracy_neural_256 = 0.f;
+    float accuracy_neural_6x32 = 0.f;
     for(uint i = 0; i < NUM_ITERATIONS; i++)
     {
         const float x = randf()*10000000;
@@ -294,6 +399,7 @@ int main()
         norm_intrin(x, y, z);
         norm_neural(x, y, z);
         norm_neural_256(x, y, z);
+        norm_neural_6x32(x, y, z);
 
         //printf(":1: %f %f %f / %f %f %f\n", nx, ny, nz, nx3, ny3, nz3);
         //printf(":2: %f %f %f / %f %f %f\n", nx, ny, nz, nx4, ny4, nz4);
@@ -303,13 +409,15 @@ int main()
         accuracy_intrin += dist(nx, ny, nz, nx2, ny2, nz2);
         accuracy_neural += dist(nx, ny, nz, nx3, ny3, nz3);
         accuracy_neural_256 += dist(nx, ny, nz, nx4, ny4, nz4);
+        accuracy_neural_6x32 += dist(nx, ny, nz, nx5, ny5, nz5);
     }
     accuracy_inv /= NUM_ITERATIONS;
     accuracy_intrin /= NUM_ITERATIONS;
     accuracy_neural /= NUM_ITERATIONS;
     accuracy_neural_256 /= NUM_ITERATIONS;
+    accuracy_neural_6x32 /= NUM_ITERATIONS;
 
-    printf("InvSqrt:   %f\nIntrinsic: %f\nNeural16:  %f\nNeural256: %f\n", accuracy_inv, accuracy_intrin, accuracy_neural, accuracy_neural_256);
+    printf("InvSqrt:    %f\nIntrinsic:  %f\nNeural16:   %f\nNeural256:  %f\nNeural6x32: %f\n", accuracy_inv, accuracy_intrin, accuracy_neural, accuracy_neural_256, accuracy_neural_6x32);
 
     ///
 
