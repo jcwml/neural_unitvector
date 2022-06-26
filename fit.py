@@ -54,7 +54,7 @@ model_name = 'keras_model'
 optimiser = 'adam'
 activator = 'tanh'
 inputsize = 3
-outputsize =  3
+outputsize = 3
 epoches = 6
 layers = 0
 layer_units = 128
@@ -98,15 +98,35 @@ model_name = 'models/' + activator + '_' + optimiser + '_' + str(layers) + '_' +
 print("\n--Creating Dataset")
 st = time_ns()
 
-train_x = np.empty([samples, 3], float)
-train_y = np.empty([samples, 3], float)
 
-sp = 1.0 / float(samples)
-for i in range(samples):
-    m = sp * float(i)
-    vec = [random()*10000, random()*10000, random()*10000]
-    train_x[i] = vec
-    train_y[i] = norm(vec)
+# this dataset is too low quality for some reason ?!
+# train_x = np.empty([samples, 3], float)
+# train_y = np.empty([samples, 3], float)
+# sp = 1.0 / float(samples)
+# for i in range(samples):
+#     m = sp * float(i)
+#     vec = [random()*10000, random()*10000, random()*10000]
+#     train_x[i] = vec
+#     train_y[i] = norm(vec)
+
+
+# this dataset produces higher quality training
+if isfile("train_x.npy"):
+    train_x = np.load("train_x.npy")
+    train_y = np.load("train_y.npy")
+else:
+    load_x = []
+    with open("dataset.dat", 'rb') as f:
+        load_x = np.fromfile(f, dtype=np.float32)
+    train_x = np.reshape(load_x, [samples, inputsize])
+
+    train_y = np.empty([samples, 3], float)
+    for i in range(samples):
+        train_y[i] = norm(train_x[i])
+    
+    np.save("train_x.npy", train_x)
+    np.save("train_y.npy", train_y)
+
 
 # shuffle_in_unison(train_x, train_y) 
 # train_x = np.reshape(train_x, [samples, inputsize])
@@ -144,8 +164,8 @@ model.summary()
 if optimiser == 'adam':
     optim = keras.optimizers.Adam(learning_rate=0.001)
 elif optimiser == 'sgd':
-    lr_schedule = keras.optimizers.schedules.ExponentialDecay(initial_learning_rate=0.3, decay_steps=epoches*samples, decay_rate=0.1)
-    #lr_schedule = keras.optimizers.schedules.ExponentialDecay(initial_learning_rate=0.1, decay_steps=epoches*samples, decay_rate=0.01)
+    #lr_schedule = keras.optimizers.schedules.ExponentialDecay(initial_learning_rate=0.3, decay_steps=epoches*samples, decay_rate=0.1)
+    lr_schedule = keras.optimizers.schedules.ExponentialDecay(initial_learning_rate=0.1, decay_steps=epoches*samples, decay_rate=0.01)
     optim = keras.optimizers.SGD(learning_rate=lr_schedule, momentum=0.0, nesterov=False)
 elif optimiser == 'momentum':
     optim = keras.optimizers.SGD(learning_rate=0.01, momentum=0.9, nesterov=False)
@@ -168,7 +188,7 @@ model.compile(optimizer=optim, loss='mean_squared_error', metrics=['accuracy'])
 
 # train network
 history = model.fit(train_x, train_y, epochs=epoches, batch_size=batches)
-model_name = model_name + "_" + "[{:.2f}]".format(history.history['accuracy'][-1])
+model_name = model_name + "_" + "a{:.2f}".format(history.history['accuracy'][-1])
 timetaken = (time_ns()-st)/1e+9
 print("\nTime Taken:", "{:.2f}".format(timetaken), "seconds")
 
@@ -219,10 +239,24 @@ f.close()
 
 # save prediction model
 seed(457895)
-predict_samples = 8192
-predict_x = np.empty([predict_samples, 3], float)
-for i in range(predict_samples):
-    predict_x[i] = [random()*10000000, random()*10000000, random()*10000000]
+
+
+# predict_samples = 8192
+# predict_x = np.empty([predict_samples, 3], float)
+# for i in range(predict_samples):
+#     predict_x[i] = [random()*10000000, random()*10000000, random()*10000000]
+
+predict_samples = samples
+predict_x = []
+if isfile("predict_x.npy"):
+    predict_x = np.load("predict_x.npy")
+else:
+    load_x = []
+    with open("testset.dat", 'rb') as f:
+        load_x = np.fromfile(f, dtype=np.float32)
+    predict_x = np.reshape(load_x, [predict_samples, inputsize])
+    np.save("predict_x.npy", predict_x)
+
 
 ad = 0.0
 f = open(model_name + "_pd.csv", "w")
@@ -241,7 +275,7 @@ if f:
     f.close()
 
 # save keras model
-# model.save(model_name)
+model.save(model_name)
 
 print("\nTest Set Avg Deviance:", ad/predict_samples, "\n")
 
