@@ -96,10 +96,10 @@ void norm_neural_256(float x, float y, float z)
     float o[3];
     for(int i = 0; i < 3; i++)
     {
-        const int j = i*17;
-        for(int k = 0; k < 17; k++)
+        const int j = i*257;
+        for(int k = 0; k < 257; k++)
             o[i] += (n1v0[j+k] * x);
-        o[i] += n1v0[j+17];
+        o[i] += n1v0[j+257];
     }
 
     nx4 = o[0];
