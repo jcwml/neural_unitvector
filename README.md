@@ -44,6 +44,5 @@ Speed Test
 Neural16:   1.021691
 Neural256:  0.945880
 Neural6x32: 0.926647
-
-Neural256 is 0.075811 more accurate than Neural16 for 185,605 μs more compute time that's 22.6x more compute time for ~1/13th more accuracy.
 ```
+Neural256 is 0.075811 more accurate than Neural16 for 185,605 μs more compute time that's 22.6x more compute time for ~1/13th more accuracy.
