@@ -30,7 +30,7 @@ There is an overfitting problem when training in Python, as such I now use datas
 
 The idea that a neural network can learn complex functions is honestly mostly a myth, or very rare/specific cases and even so they're not efficient at doing so, they really are just machines that seperate points of data into classes with shoddy interpolation between the points because activation functions are not designed to seperate data in a way that is necessarily interpolatable, it's just a side effect of the circumstances.
 
-Also neural networks scale REALLY BADLY when it comes to getting higher accuracy results, you can see the amount of added complexity to these neural networks for VERY MINIMAL gains is redicilous. Excuse my use of upper case.
+Also neural networks scale REALLY BADLY when it comes to getting higher accuracy results, you can see the amount of added complexity to these neural networks for VERY MINIMAL gains is ridiculous. Excuse my use of upper case.
 
 Context:
 ```
