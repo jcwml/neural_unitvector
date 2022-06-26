@@ -218,8 +218,10 @@ f.write("#endif\n")
 f.close()
 
 # save prediction model
-predict_x = np.empty([8192, 3], float)
-for i in range(8192):
+seed(457895)
+predict_samples = 8192
+predict_x = np.empty([predict_samples, 3], float)
+for i in range(predict_samples):
     predict_x[i] = [random()*10000000, random()*10000000, random()*10000000]
 
 ad = 0.0
@@ -229,7 +231,7 @@ if f:
     f.write("total deviance | predicted | actual\n")
 
     p = model.predict(predict_x)
-    for i in range(8192):
+    for i in range(predict_samples):
         an = norm([predict_x[i][0], predict_x[i][1], predict_x[i][2]])
         # dev = abs(p[i][0]-an[0]) + abs(p[i][1]-an[1]) + abs(p[i][2]-an[2])
         dev = dist(p[i][0], p[i][1], p[i][2], an[0], an[1], an[2])
@@ -241,7 +243,7 @@ if f:
 # save keras model
 # model.save(model_name)
 
-print("\nTest Set Avg Deviance:", ad/8192, "\n")
+print("\nTest Set Avg Deviance:", ad/predict_samples, "\n")
 
 timetaken = (time_ns()-st)/1e+9
 print("Time Taken:", "{:.2f}".format(timetaken), "seconds\n")
