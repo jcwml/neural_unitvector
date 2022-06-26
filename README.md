@@ -47,4 +47,4 @@ Neural6x32: 0.926647
 ```
 Neural256 is 0.075811 more accurate than Neural16 for 185,605 μs more compute time that's 22.6x more compute time for ~1/13th more accuracy.
 
-It seems fair to say the gains get exponentially worse.
+It seems fair to say the gains get exponentially worse in terms of "bang for buck".
