@@ -9,6 +9,7 @@
 #include <x86intrin.h>
 
 #define NUM_ITERATIONS 1000000000
+//#define NUM_ITERATIONS 100000
 
 uint64_t microtime()
 {
@@ -61,13 +62,13 @@ const float nv1[] = {-0.04304739,-0.040557653,0.06273674,-0.062496893,0.03046579
 float nx3, ny3, nz3;
 void norm_neural(float x, float y, float z)
 {
-    float h[16];
+    float h[16] = {0};
     for(int i = 0; i < 16; i++)
     {
         const int j = i*4;
         h[i] = (nv0[j] * x) + (nv0[j+1] * y) + (nv0[j+2] * z) + nv0[j+3];
     }
-    float o[3];
+    float o[3] = {0};
     for(int i = 0; i < 3; i++)
     {
         const int j = i*17;
@@ -87,13 +88,13 @@ const float n1v1[] = {-0.0018870501,0.0070576705,-0.0022904177,0.12850343,-0.019
 float nx4, ny4, nz4;
 void norm_neural_256(float x, float y, float z)
 {
-    float h[256];
+    float h[256] = {0};
     for(int i = 0; i < 256; i++)
     {
         const int j = i*4;
         h[i] = (n1v0[j] * x) + (n1v0[j+1] * y) + (n1v0[j+2] * z) + n1v0[j+3];
     }
-    float o[3];
+    float o[3] = {0};
     for(int i = 0; i < 3; i++)
     {
         const int j = i*257;
