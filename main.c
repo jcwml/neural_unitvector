@@ -292,22 +292,6 @@ int main()
 
     for(uint i = 0; i < NUM_ITERATIONS; i++)
     {
-        norm_neural_256(randf()*10000000, randf()*10000000, randf()*10000000);
-        antioptim += nx4+ny4+nz4;
-    }
-
-    stf  = __rdtsc()-st;
-    stmf = microtime()-stm;
-
-    printf(":: norm_neural_256()  :: %'lu μs, %'lu Cycles\n", stmf, stf);
-
-    ///
-
-    stm = microtime();
-    st  = __rdtsc();
-
-    for(uint i = 0; i < NUM_ITERATIONS; i++)
-    {
         norm_neural_6x32(randf()*10000000, randf()*10000000, randf()*10000000);
         antioptim += nx5+ny5+nz5;
     }
@@ -316,6 +300,22 @@ int main()
     stmf = microtime()-stm;
 
     printf(":: norm_neural_6x32() :: %'lu μs, %'lu Cycles\n", stmf, stf);
+
+    ///
+
+    stm = microtime();
+    st  = __rdtsc();
+
+    for(uint i = 0; i < NUM_ITERATIONS; i++)
+    {
+        norm_neural_256(randf()*10000000, randf()*10000000, randf()*10000000);
+        antioptim += nx4+ny4+nz4;
+    }
+
+    stf  = __rdtsc()-st;
+    stmf = microtime()-stm;
+
+    printf(":: norm_neural_256()  :: %'lu μs, %'lu Cycles\n", stmf, stf);
 
     ///
 
