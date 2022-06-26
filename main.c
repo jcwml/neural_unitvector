@@ -10,7 +10,7 @@
 #include <x86intrin.h>
 
 #define NUM_ITERATIONS 1000000000
-//#define NUM_ITERATIONS 100000
+//#define NUM_ITERATIONS 3
 
 uint64_t microtime()
 {
@@ -67,15 +67,15 @@ void norm_neural(float x, float y, float z)
     for(int i = 0; i < 16; i++)
     {
         const int j = i*4;
-        h[i] = (nv0[j] * x) + (nv0[j+1] * y) + (nv0[j+2] * z) + nv0[j+3];
+        h[i] = tanhf((nv0[j] * x) + (nv0[j+1] * y) + (nv0[j+2] * z) + nv0[j+3]);
     }
     float o[3] = {0};
     for(int i = 0; i < 3; i++)
     {
         const int j = i*17;
-        for(int k = 0; k < 17; k++)
-            o[i] += (nv0[j+k] * x);
-        o[i] += nv0[j+17];
+        for(int k = 0; k < 16; k++)
+            o[i] += (nv1[j+k] * h[k]);
+        o[i] += nv1[j+16];
     }
 
     nx3 = o[0];
@@ -93,15 +93,15 @@ void norm_neural_256(float x, float y, float z)
     for(int i = 0; i < 256; i++)
     {
         const int j = i*4;
-        h[i] = (n1v0[j] * x) + (n1v0[j+1] * y) + (n1v0[j+2] * z) + n1v0[j+3];
+        h[i] = tanhf((n1v0[j] * x) + (n1v0[j+1] * y) + (n1v0[j+2] * z) + n1v0[j+3]);
     }
     float o[3] = {0};
     for(int i = 0; i < 3; i++)
     {
         const int j = i*257;
-        for(int k = 0; k < 257; k++)
-            o[i] += (n1v0[j+k] * x);
-        o[i] += n1v0[j+257];
+        for(int k = 0; k < 256; k++)
+            o[i] += (n1v1[j+k] * h[k]);
+        o[i] += n1v1[j+256];
     }
 
     nx4 = o[0];
@@ -227,11 +227,17 @@ int main()
     float accuracy_neural_256 = 0.f;
     for(uint i = 0; i < NUM_ITERATIONS; i++)
     {
-        norm(randf()*10000000, randf()*10000000, randf()*10000000);
-        norm_inv(randf()*10000000, randf()*10000000, randf()*10000000);
-        norm_intrin(randf()*10000000, randf()*10000000, randf()*10000000);
-        norm_neural(randf()*10000000, randf()*10000000, randf()*10000000);
-        norm_neural_256(randf()*10000000, randf()*10000000, randf()*10000000);
+        const float x = randf()*10000000;
+        const float y = randf()*10000000;
+        const float z = randf()*10000000;
+        norm(x, y, z);
+        norm_inv(x, y, z);
+        norm_intrin(x, y, z);
+        norm_neural(x, y, z);
+        norm_neural_256(x, y, z);
+
+        // printf(":1: %f %f %f / %f %f %f\n", nx, ny, nz, nx3, ny3, nz3);
+        // printf(":2: %f %f %f / %f %f %f\n", nx, ny, nz, nx4, ny4, nz4);
 
         // we will assume norm() is the most accurate
         accuracy_inv += dist(nx, ny, nz, nx1, ny1, nz1);
