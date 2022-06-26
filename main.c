@@ -140,6 +140,7 @@ void norm_neural_6x32(float x, float y, float z)
         for(int k = 0; k < 32; k++)
             h1[i] += (neural_unitvector_layer1[j+k] * h0[k]);
         h1[i] += neural_unitvector_layer1[j+32];
+        h1[i] = tanhf(h1[i]);
     }
 
     float h2[32];
@@ -150,6 +151,7 @@ void norm_neural_6x32(float x, float y, float z)
         for(int k = 0; k < 32; k++)
             h2[i] += (neural_unitvector_layer2[j+k] * h1[k]);
         h2[i] += neural_unitvector_layer2[j+32];
+        h2[i] = tanhf(h1[i]);
     }
 
     float h3[32];
@@ -160,6 +162,7 @@ void norm_neural_6x32(float x, float y, float z)
         for(int k = 0; k < 32; k++)
             h3[i] += (neural_unitvector_layer3[j+k] * h2[k]);
         h3[i] += neural_unitvector_layer3[j+32];
+        h3[i] = tanhf(h3[i]);
     }
 
     float h4[32];
@@ -170,6 +173,7 @@ void norm_neural_6x32(float x, float y, float z)
         for(int k = 0; k < 32; k++)
             h4[i] += (neural_unitvector_layer4[j+k] * h3[k]);
         h4[i] += neural_unitvector_layer4[j+32];
+        h4[i] = tanhf(h4[i]);
     }
 
     float h5[32];
@@ -180,6 +184,7 @@ void norm_neural_6x32(float x, float y, float z)
         for(int k = 0; k < 32; k++)
             h5[i] += (neural_unitvector_layer5[j+k] * h4[k]);
         h5[i] += neural_unitvector_layer5[j+32];
+        h5[i] = tanhf(h5[i]);
     }
 
     float h6[32];
@@ -190,6 +195,7 @@ void norm_neural_6x32(float x, float y, float z)
         for(int k = 0; k < 32; k++)
             h6[i] += (neural_unitvector_layer6[j+k] * h5[k]);
         h6[i] += neural_unitvector_layer6[j+32];
+        h6[i] = tanhf(h6[i]);
     }
 
     float o[3] = {0};
@@ -202,9 +208,9 @@ void norm_neural_6x32(float x, float y, float z)
         o[i] += neural_unitvector_layer7[j+32];
     }
 
-    nx4 = o[0];
-    ny4 = o[1];
-    nz4 = o[2];
+    nx5 = o[0];
+    ny5 = o[1];
+    nz5 = o[2];
 }
 
 float dist(float x1, float y1, float z1, float x2, float y2, float z2)
