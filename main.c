@@ -9,7 +9,7 @@
 
 #include <x86intrin.h>
 
-#define NUM_ITERATIONS 1000000000
+#define NUM_ITERATIONS 100000
 //#define NUM_ITERATIONS 3
 
 uint64_t microtime()
@@ -63,7 +63,7 @@ const float nv1[] = {-0.04304739,-0.040557653,0.06273674,-0.062496893,0.03046579
 float nx3, ny3, nz3;
 void norm_neural(float x, float y, float z)
 {
-    float h[16] = {0};
+    float h[16];
     for(int i = 0; i < 16; i++)
     {
         const int j = i*4;
@@ -72,6 +72,7 @@ void norm_neural(float x, float y, float z)
     float o[3] = {0};
     for(int i = 0; i < 3; i++)
     {
+        o[i] = 0.f;
         const int j = i*17;
         for(int k = 0; k < 16; k++)
             o[i] += (nv1[j+k] * h[k]);
@@ -89,7 +90,7 @@ const float n1v1[] = {-0.0018870501,0.0070576705,-0.0022904177,0.12850343,-0.019
 float nx4, ny4, nz4;
 void norm_neural_256(float x, float y, float z)
 {
-    float h[256] = {0};
+    float h[256];
     for(int i = 0; i < 256; i++)
     {
         const int j = i*4;
@@ -98,6 +99,7 @@ void norm_neural_256(float x, float y, float z)
     float o[3] = {0};
     for(int i = 0; i < 3; i++)
     {
+        o[i] = 0.f;
         const int j = i*257;
         for(int k = 0; k < 256; k++)
             o[i] += (n1v1[j+k] * h[k]);
