@@ -1,6 +1,6 @@
 
 // github.com/jcwml
-// gcc main.c -lm -Ofast -mavx -mfma4 -o main
+// gcc main.c -lm -Ofast -mfma4 -o main
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
