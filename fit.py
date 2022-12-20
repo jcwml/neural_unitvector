@@ -1,5 +1,4 @@
 # github.com/jcwml
-# 3D training points are 0 - 10,000 in range and the test set uses point in a 0 - 10,000,000 range.
 import sys
 import os
 import math
@@ -29,6 +28,7 @@ from os.path import isdir
 
 # disable warnings
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+//os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
 # print everything / no truncations
 np.set_printoptions(threshold=sys.maxsize)
@@ -57,7 +57,7 @@ inputsize = 3
 outputsize = 3
 epoches = 6
 layers = 0
-layer_units = 128
+layer_units = 16
 batches = 128
 samples = 3333333
 external_data = 1
