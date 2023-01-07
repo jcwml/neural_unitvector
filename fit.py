@@ -7,7 +7,6 @@ from tensorflow import keras
 from tensorflow.keras import layers
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
-from tensorflow.keras.layers import Dropout
 from random import seed, uniform
 from time import time_ns
 from sys import exit
@@ -33,13 +32,7 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 # print everything / no truncations
 np.set_printoptions(threshold=sys.maxsize)
 
-# https://stackoverflow.com/questions/4601373/better-way-to-shuffle-two-numpy-arrays-in-unison
-# def shuffle_in_unison(a, b):
-#     rng_state = np.random.get_state()
-#     np.random.shuffle(a)
-#     np.random.set_state(rng_state)
-#     np.random.shuffle(b)
-
+# utility functions
 def norm(v):
     l = math.sqrt(v[0]*v[0]+v[1]*v[1]+v[2]*v[2])
     return [v[0]/l, v[1]/l, v[2]/l]
@@ -55,11 +48,11 @@ optimiser = 'adam'
 activator = 'tanh'
 inputsize = 3
 outputsize = 3
-epoches = 6
 layers = 0
-layer_units = 16
+layer_units = 256
 batches = 128
 samples = 3333333
+epoches = 6
 external_data = 1
 
 # load options
@@ -100,7 +93,6 @@ print("\n--Creating Dataset")
 st = time_ns()
 
 if external_data == 0:
-    #this dataset is too low quality for some reason ?!
     train_x = np.empty([samples, 3], float)
     train_y = np.empty([samples, 3], float)
     sp = 1.0 / float(samples)
@@ -110,7 +102,6 @@ if external_data == 0:
         train_x[i] = vec
         train_y[i] = norm(vec)
 else:
-    # this dataset produces higher quality training
     if isfile("train_x.npy"):
         train_x = np.load("train_x.npy")
         train_y = np.load("train_y.npy")
@@ -126,10 +117,6 @@ else:
         
         np.save("train_x.npy", train_x)
         np.save("train_y.npy", train_y)
-
-# shuffle_in_unison(train_x, train_y) 
-# train_x = np.reshape(train_x, [samples, inputsize])
-# train_y = np.reshape(train_y, [samples, outputsize])
 
 # print(train_x.shape)
 # print(train_x)
@@ -149,12 +136,8 @@ print("\n--Training Model")
 model = Sequential()
 
 model.add(Dense(layer_units, activation=activator, input_dim=inputsize))
-
 for x in range(layers):
-    # model.add(Dropout(.3))
     model.add(Dense(layer_units, activation=activator))
-
-# model.add(Dropout(.3))
 model.add(Dense(outputsize))
 
 # output summary
@@ -205,11 +188,9 @@ f = open(model_name + "_layers.h", "w")
 f.write("#ifndef " + project + "_layers\n#define " + project + "_layers\n\n")
 if f:
     for layer in model.layers:
-        total_layer_weights = layer.get_weights()[0].flatten().shape[0]
+        total_layer_weights = layer.get_weights()[0].transpose().flatten().shape[0]
         total_layer_units = layer.units
         layer_weights_per_unit = total_layer_weights / total_layer_units
-        #print(layer.get_weights()[0].flatten().shape)
-        #print(layer.units)
         print("+ Layer:", li)
         print("Total layer weights:", total_layer_weights)
         print("Total layer units:", total_layer_units)
@@ -220,7 +201,7 @@ if f:
         wc = 0
         bc = 0
         if layer.get_weights() != []:
-            for weight in layer.get_weights()[0].flatten():
+            for weight in layer.get_weights()[0].transpose().flatten():
                 wc += 1
                 if isfirst == 0:
                     f.write(str(weight))
@@ -228,14 +209,16 @@ if f:
                 else:
                     f.write("," + str(weight))
                 if wc == layer_weights_per_unit:
-                    f.write(", /* bias */ " + str(layer.get_weights()[1].flatten()[bc]))
-                    #print("bias", str(layer.get_weights()[1].flatten()[bc]))
+                    f.write(", /* bias */ " + str(layer.get_weights()[1].transpose().flatten()[bc]))
                     wc = 0
                     bc += 1
         f.write("};\n\n")
         li += 1
 f.write("#endif\n")
 f.close()
+
+# save keras model
+model.save(model_name)
 
 # save prediction model
 seed(457895)
@@ -272,9 +255,6 @@ if f:
         f.write(str(dev) + " | " + str(p[i][0]) + "," + str(p[i][1]) + "," + str(p[i][2]) + " | " + str(an[0]) + "," + str(an[1]) + "," + str(an[2]) + "\n")
 
     f.close()
-
-# save keras model
-model.save(model_name)
 
 print("\nTest Set Avg Deviance:", ad/predict_samples, "\n")
 
