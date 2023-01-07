@@ -20,7 +20,7 @@ uint64_t microtime()
     return 1000000 * tv.tv_sec + tv.tv_usec;
 }
 
-float InvSqrt(float x) // this serves as comparison to a low quality normal vector approximation
+float InvSqrt(float x)
 {
     // https://en.wikipedia.org/wiki/Fast_inverse_square_root
     float xhalf = 0.5f * x;
@@ -351,6 +351,7 @@ int main()
 
     ///
 
+    float accuracy = 0.f;
     float accuracy_inv = 0.f;
     float accuracy_intrin = 0.f;
     float accuracy_neural = 0.f;
@@ -375,19 +376,21 @@ int main()
         //printf(":2: %f %f %f / %f %f %f\n", nx, ny, nz, nx4, ny4, nz4);
 
         // we will assume norm() is the most accurate
+        accuracy += dist(nx, ny, nz, nx1, ny1, nz1);
         accuracy_inv += dist(nx, ny, nz, nx1, ny1, nz1);
         accuracy_intrin += dist(nx, ny, nz, nx2, ny2, nz2);
         accuracy_neural += dist(nx, ny, nz, nx3, ny3, nz3);
         accuracy_neural_256 += dist(nx, ny, nz, nx4, ny4, nz4);
         accuracy_neural_6x32 += dist(nx, ny, nz, nx5, ny5, nz5);
     }
+    accuracy /= NUM_ITERATIONS;
     accuracy_inv /= NUM_ITERATIONS;
     accuracy_intrin /= NUM_ITERATIONS;
     accuracy_neural /= NUM_ITERATIONS;
     accuracy_neural_256 /= NUM_ITERATIONS;
     accuracy_neural_6x32 /= NUM_ITERATIONS;
 
-    printf("InvSqrt:    %f\nIntrinsic:  %f\nNeural16:   %f\nNeural256:  %f\nNeural6x32: %f\n", accuracy_inv, accuracy_intrin, accuracy_neural, accuracy_neural_256, accuracy_neural_6x32);
+    printf("Norm:       %f\nIntrinsic:  %f\nInvSqrt:    %f\nNeural16:   %f\nNeural256:  %f\nNeural6x32: %f\n", accuracy, accuracy_intrin, accuracy_inv, accuracy_neural, accuracy_neural_256, accuracy_neural_6x32);
 
     ///
 
