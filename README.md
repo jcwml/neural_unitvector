@@ -25,6 +25,6 @@ As you can see, the neural network is the least performing. This test used a sma
 
 The 'Accuracy' value is the euclidean distance between the vector produced by the function and the actual vector produced by the accurate function which is a `1.f/sqrtf()` vector normalisation function.
 
-It is unlikely that a neural unit vector function will ever compete with the traditional normalisation functions in speed or accuracy combined or individually. An average accuracy of ~1 is actually really bad because all summed parts of a unit vector are to add up to 1, so if the average accuracy is 1 over the original function, that's enough to have completely ruined our unit vector.
+It is unlikely that a neural unit vector function will ever compete with the traditional normalisation functions in speed or accuracy combined or individually. An average accuracy of ~0.04 is actually really bad because all summed parts of a unit vector are to precisely add up to 1, so if the average accuracy is 0.04 off the original function, that's enough to have completely ruined our unit vector in most use cases.
 
 The idea that a neural network can learn complex functions is honestly mostly a myth, or very rare/specific cases and even so they're not efficient at doing so, they really are just machines that seperate points of data into classes with shoddy interpolation _(by that I mean extrapolation)_ between the points - because activation functions are not designed to seperate data in a way that is necessarily interpolatable, it's just a side effect of the circumstances.
