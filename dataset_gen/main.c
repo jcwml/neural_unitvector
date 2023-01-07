@@ -47,7 +47,7 @@ int main()
     srandfq = urand_int();
 #endif
 
-    FILE* f = fopen("dataset.dat", "w");
+    FILE* f = fopen("../dataset.dat", "w");
     if(f != NULL)
     {
         for(size_t i = 0; i < DATASET_SIZE; i++)
@@ -66,7 +66,7 @@ int main()
         fclose(f);
     }
 
-    f = fopen("testset.dat", "w");
+    f = fopen("../testset.dat", "w");
     if(f != NULL)
     {
         for(size_t i = 0; i < DATASET_SIZE; i++)
