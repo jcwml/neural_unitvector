@@ -20,7 +20,7 @@ uint64_t microtime()
     return 1000000 * tv.tv_sec + tv.tv_usec;
 }
 
-float InvSqrt(float x)
+float InvSqrt(float x) // this serves as comparison to a low quality normal vector approximation
 {
     // https://en.wikipedia.org/wiki/Fast_inverse_square_root
     float xhalf = 0.5f * x;
